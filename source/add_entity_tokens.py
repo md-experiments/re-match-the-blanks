@@ -3,8 +3,12 @@ from transformers import AutoTokenizer, AutoModelForMaskedLM, AutoModel
 import argparse
 import torch
 
+"""
+python source/add_entity_tokens.py --model_name distilbert-base-uncased
+"""
+
 def main():
-    parser = argparse.ArgumentParser(description='Monthly CommonCrawl Parse')
+    parser = argparse.ArgumentParser(description='Add entity tokens to model definition')
     parser.add_argument('--model_name',
                         default="bert-base-uncased",
                         type=str,
@@ -23,13 +27,11 @@ def main():
         os.mkdir('models')
     else:
         print('./models exists already')
-
-
         
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModel.from_pretrained(model_name)
 
-    new_tokens = ['[ENTITY1]','[END_ENTITY1]','[ENTITY2]','[END_ENTITY2]']
+    new_tokens = ['<E1>','</E1>','<E2>','</E2>']
     if any(100==tokenizer.convert_tokens_to_ids(t) for t in new_tokens):
         print(len(tokenizer))  # 28996
         tokenizer.add_tokens(new_tokens)
