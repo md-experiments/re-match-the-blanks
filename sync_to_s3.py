@@ -13,6 +13,8 @@ def main():
     
     bucket_path = 're-matching-the-blanks'
     models_path = args.model_path
+    if models_path.endswith('/'):
+        models_path = models_path[:-1]
     model_name = models_path.split('/')[-1]
     # Remove checkpoints
     os.system(f'rm -r {models_path}/checkpoint-*')
