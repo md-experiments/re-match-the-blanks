@@ -3,3 +3,4 @@ sentence-transformers==1.0.4
 torch==1.8.1
 pandas==1.2.4
 datasets==1.6.0
+boto3
