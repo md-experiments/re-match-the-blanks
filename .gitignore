@@ -17,3 +17,4 @@ aws_key*
 gcp_key*
 *.mp4
 data/
+models/

@@ -3,6 +3,8 @@ import numpy as np
 def find_token_range(tok_doc, tok_trgt):
     """
     Returns the range where the tokens belong to from within a tokenized doc
+    NB: Notice that this currently assumes the tokenizer of the short series will be the same as the tokenization of the long one
+    There are cases where sub-series will tokenize differently, esp when using cased tokenizers
     """
     res = []
     len_trgt = len(tok_trgt)
