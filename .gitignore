@@ -18,3 +18,4 @@ gcp_key*
 *.mp4
 data/
 models/
+trained_models/
