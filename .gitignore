@@ -1,0 +1,19 @@
+
+# Model checkpoints
+*.pt
+*.csv
+*.zip
+*api_key.txt
+
+.DS_Store
+__pycache__/
+
+.ipynb_checkpoints/
+latest_ts_*
+# Data folders
+
+# API keys
+aws_key*
+gcp_key*
+*.mp4
+data/
