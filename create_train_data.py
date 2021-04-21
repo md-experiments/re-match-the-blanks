@@ -4,9 +4,11 @@ import os
 import pandas as pd
 from source.data_prep import sentence_masker
 from source.utils import flatten_list, create_path
+import argparse
 
-
-
+"""
+python create_train_data --masking_method mask_one
+"""
 
 def create_few_rel_dataset(js_ls, file_name, save_path, split_data, method, ):
     random_state = 1701
@@ -68,7 +70,14 @@ def create_few_rel_dataset(js_ls, file_name, save_path, split_data, method, ):
 
 
 def main():
-    method = 'bracket'
+    parser = argparse.ArgumentParser(
+        description='Create data by masking method')
+    parser.add_argument('--masking_method',
+                        default="bracket",
+                        type=str,
+                        help='Default: bracket, Alternatives: mask_one, ignore')
+    args = parser.parse_args()
+    method = args.masking_method
     save_path = './data/train_samples/'
     create_path(save_path)
     with open('./data/few_rel/train_wiki.json','r') as data:

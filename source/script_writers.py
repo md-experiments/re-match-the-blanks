@@ -1,5 +1,8 @@
 from utils import create_path
-
+import argparse
+"""
+python source/script_writers.py --masking_method mask_one
+"""
 class DictToClass:
     def __init__(self, d):
         for ky, vl in d.items():
@@ -28,8 +31,16 @@ def create_run_glue_script(p):
     print(c)
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='Create data by masking method')
+    parser.add_argument('--masking_method',
+                        default="bracket",
+                        type=str,
+                        help='Default: bracket, Alternatives: mask_one, ignore')
+    args = parser.parse_args()
+    method = args.masking_method
     model_name = 'distilbert-base-uncased-mtb-rnd'
-    exp = 'fel_rel_bracket'
+    exp = f'fel_rel_{method}'
     create_path('./trained_models/')
     
     p = dict(
@@ -37,8 +48,8 @@ if __name__ == '__main__':
         max_len = 128*2,
         tr_ep = 1,
         output_dir = f'./trained_models/{model_name}_{exp}',
-        file = './data/train_samples/few_rel_train_bracket',
-        file_test = './data/train_samples/few_rel_val_bracket',
+        file = f'./data/train_samples/few_rel_train_{method}',
+        file_test = f'./data/train_samples/few_rel_val_{method}',
         test_mode = True,
         nr_test = 10
     )
@@ -51,8 +62,8 @@ if __name__ == '__main__':
         max_len = 128*2,
         tr_ep = 15,
         output_dir = f'./trained_models/{model_name}_{exp}/',
-        file = './data/train_samples/few_rel_train_bracket',
-        file_test = './data/train_samples/few_rel_val_bracket',
+        file = f'./data/train_samples/few_rel_train_{method}',
+        file_test = f'./data/train_samples/few_rel_val_{method}',
         test_mode = False,
         nr_test = 10
     )
