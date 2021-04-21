@@ -62,11 +62,18 @@ def create_few_rel_dataset(js_ls, file_name, save_path, split_data, method, ):
         df_train = df_rel.iloc[:train_len].drop(extra_cols, axis=1).copy()
         df_val = df_rel.iloc[train_len:].drop(extra_cols, axis=1).copy()
         
-        df_train.to_csv(os.path.join(save_path,f'{file_name}_{method}_train.csv'), index=False)
-        df_val.to_csv(os.path.join(save_path,f'{file_name}_{method}_val.csv'), index=False)
+        train_path = os.path.join(save_path,f'{file_name}_{method}_train.csv')
+        df_train.to_csv(train_path, index=False)
+        print('Saved file',train_path)
+        
+        val_path = os.path.join(save_path,f'{file_name}_{method}_val.csv')
+        df_val.to_csv(val_path, index=False)
+        print('Saved file',val_path)
     else:
         df_train = df_rel.drop(extra_cols, axis=1).copy()
-        df_train.to_csv(os.path.join(save_path,f'{file_name}_{method}_test.csv'), index=False)  
+        test_path = os.path.join(save_path,f'{file_name}_{method}_test.csv')
+        df_train.to_csv(test_path, index=False)  
+        print('Saved file',test_path)
 
 
 def main():
