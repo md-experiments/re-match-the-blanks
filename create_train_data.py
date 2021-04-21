@@ -13,8 +13,8 @@ def create_few_rel_dataset(js_ls, file_name, save_path, split_data, method, ):
     label_pos = 1
     label_neg = 0
     entity_tokens = {
-        'h': ['<E1>','</E1>'],
-        't': ['<E2>','</E2>']
+        'h': ['<e1>','</e1>'],
+        't': ['<e2>','</e2>']
     }
     col_nm = ['sentence1','sentence2','label','relation']
     list_rels = list(js_ls)

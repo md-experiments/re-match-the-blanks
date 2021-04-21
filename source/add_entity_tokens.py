@@ -31,7 +31,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModel.from_pretrained(model_name)
 
-    new_tokens = ['<E1>','</E1>','<E2>','</E2>']
+    new_tokens = ['<e1>','</e1>','<e2>','</e2>']
     if any(100==tokenizer.convert_tokens_to_ids(t) for t in new_tokens):
         print(len(tokenizer))  # 28996
         tokenizer.add_tokens(new_tokens)
