@@ -30,6 +30,18 @@ def create_run_glue_script(p):
         c = c + f" --output_dir {p.output_dir}"
     print(c)
 
+def create_sbert_script(p):
+    p = DictToClass(p)
+    c = f"python train_sbert.py \
+            --model_path {p.model_path} \
+            --max_seq_length {p.max_len} \
+            --dataset {p.dataset} \
+            --num_epochs {p.tr_ep}"
+
+    if p.test_mode:
+        c = c + f" --num_samples {p.nr_test}"
+    print(c)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Create data by masking method')
@@ -70,3 +82,27 @@ if __name__ == '__main__':
     print('='*60+' REAL '+'='*60)
     print()
     create_run_glue_script(p)
+
+    p = dict(
+        model_path = f'./models/{model_name}/',
+        max_len = 128*2,
+        dataset = 'few_rel',
+        tr_ep = 1,
+        test_mode = True,
+        nr_test = 10
+    )
+    print('='*60+' SBERT TEST '+'='*60)
+    print()
+    create_sbert_script(p)
+    print()
+    p = dict(
+        model_path = f'./models/{model_name}/',
+        max_len = 128*2,
+        dataset = 'few_rel',
+        tr_ep = 15,
+        test_mode = False,
+    )
+    print('='*60+' SBERT REAL '+'='*60)
+    print()
+    create_sbert_script(p)
+

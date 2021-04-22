@@ -12,14 +12,14 @@ def load_eval_sbert(path_eval_data, num_samples):
         df = df.head(num_samples).copy()
     sentences1 = list(df.sentence1.values)
     sentences2 = list(df.sentence2.values)
-    scores = list(df.label.values)
+    scores = [int(l) for l in list(df.label.values)]
     return sentences1, sentences2, scores
 
 def load_train_sbert(path_train_data, num_samples):
     df = pd.read_csv(path_train_data)
     if num_samples>0:
         df = df.head(num_samples).copy()
-    train_examples = [InputExample(texts=[s1, s2], label=l) \
+    train_examples = [InputExample(texts=[s1, s2], label=int(l)) \
                 for s1,s2,l in zip(list(df.sentence1.values), list(df.sentence2.values), list(df.label.values))]
     return train_examples
 
@@ -58,15 +58,18 @@ def main():
     num_epochs = args.num_epochs
     evaluation_steps = 1000 # Frequency of evaluation results
     warmup_steps = 1000 # warm up steps
+    sentence_out_embedding_dimension = 256
 
     if model_path.endswith('/'):
         model_path = model_path[:-1]
     model_name = model_path.split('/')[-1]
 
-    path_train_data = f'./train_samples/{dataset}_train_{mask_method}_train.csv'
-    path_eval_data = f'./train_samples/{dataset}_val_{mask_method}_test.csv'
-    model_save_path = f'./trained_models/{model_name}_sbert_bi_{dataset}/'
-
+    path_train_data = f'./data/train_samples/{dataset}_train_{mask_method}_train.csv'
+    path_eval_data = f'./data/train_samples/{dataset}_val_{mask_method}_test.csv'
+    if num_samples>0:
+        model_save_path = f'./trained_models/{model_name}_sbert_bi_{dataset}_test/'
+    else:
+        model_save_path = f'./trained_models/{model_name}_sbert_bi_{dataset}/'
     ### Define the model
     word_embedding_model = models.Transformer(model_path, max_seq_length=max_seq_length)
 
@@ -78,7 +81,7 @@ def main():
 
     pooling_model = models.Pooling(word_embedding_model.get_word_embedding_dimension())
     dense_model = models.Dense(in_features=pooling_model.get_sentence_embedding_dimension(), 
-                        out_features=max_seq_length, activation_function=nn.Tanh())
+                        out_features=sentence_out_embedding_dimension, activation_function=nn.Tanh())
     # Model pipeline
     model = SentenceTransformer(modules=[word_embedding_model, pooling_model, dense_model])
 
@@ -88,9 +91,10 @@ def main():
 
     # Prep Evaluator
     sentences1, sentences2, scores = load_eval_sbert(path_eval_data, num_samples)
-    evaluator = evaluation.EmbeddingSimilarityEvaluator(sentences1, sentences2, scores)
-
-    train_loss = losses.CosineSimilarityLoss(model)
+    #evaluator = evaluation.EmbeddingSimilarityEvaluator(sentences1, sentences2, scores)
+    evaluator = evaluation.BinaryClassificationEvaluator(sentences1, sentences2, scores)
+    #train_loss = losses.CosineSimilarityLoss(model)
+    train_loss = losses.SoftmaxLoss(model, sentence_embedding_dimension= sentence_out_embedding_dimension, num_labels = 2)
 
     #Tune the model
     model.fit(train_objectives=[(train_dataloader, train_loss)],
