@@ -17,6 +17,7 @@ def read_sem_eval(path_file):
 
     split_lines = [[ln.split('\t')[0]] + ln.split('\t')[1].split('\n') for ln in ls_entries.split('\n\n')[:-1]]
     df = pd.DataFrame(split_lines, columns = ['i','sentence','label','comment']).set_index('i')
+    df['sentence'] = df['sentence'].apply(lambda x:x[1:-1]).astype(str)
     return df
 
 def create_sem_eval_dataset(df_semeval, file_name, save_path, method, ):
@@ -66,8 +67,7 @@ def create_sem_eval_dataset(df_semeval, file_name, save_path, method, ):
         df_rel_neg_i = pd.DataFrame(mask_set_mismatch, columns = col_nm)
         df_rel = df_rel.append(df_rel_neg_i, ignore_index=True)
     
-    df_rel['sentence1'] = df_rel['sentence1'].apply(lambda x:x[1:-1]).astype(str)
-    df_rel['sentence2'] = df_rel['sentence2'].apply(lambda x:x[1:-1]).astype(str)
+
     df_rel = df_rel.sample(frac=1,random_state=random_state).reset_index(drop=True)
     df_rel.to_csv(os.path.join(save_path,f'{file_name}_complete_{method}.csv'))
     

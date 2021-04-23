@@ -1,3 +1,12 @@
+from source.ngram_utils import find_token_range
+
+def update_loc(sent_toks,tail, dict_loc):
+    tail_loc = find_token_range(sent_toks,tail.split(), few_rel_location=True)
+    if len(dict_loc) == 2:
+        dict_loc.append(tail_loc)
+    else:
+        dict_loc[2] = tail_loc
+    return dict_loc
 
 
 def sentence_masker(few_rel_entry, entity_tokens, method = 'bracket'):
